@@ -56,21 +56,16 @@ class ApplicationWindow(QtGui.QMainWindow):
         random_x = np.linspace(-1000, 1000, 1000)
         random_y = np.random.randn(1000)
 
-        #layout = Layout(showlegend=False)
-
-        #trace = Scattergl(x=random_x, y=random_y)
-        #data = [trace]
-        #fig = Figure(data=data, layout=layout)
-
         view.load(
             QtCore.QUrl(
                 plot(
-                    [Scattergl(x=random_x, y=random_y)],
+                    [Scatter(x=random_x, y=random_y)],
                     auto_open=False,
                     show_link=False,
                     filename='teste.html')))
         view.settings().setAttribute(QtWebKit.QWebSettings.WebGLEnabled, True)
-        view.settings().setAttribute(QtWebKit.QWebSettings.JavascriptEnabled, True)
+        view.settings().setAttribute(QtWebKit.QWebSettings.JavascriptEnabled,
+                                     True)
         view.show()
 
     def fileQuit(self):
