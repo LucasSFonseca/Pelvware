@@ -1,6 +1,7 @@
 import sys
 from PyQt4 import QtGui, QtCore
 import numpy as np
+from ftplib import FTP
 
 import pyqtgraph as pg
 
@@ -11,16 +12,21 @@ class ApplicationWindow(QtGui.QMainWindow):
         self.setAttribute(QtCore.Qt.WA_DeleteOnClose)
         self.setWindowTitle("Pelvware")
 
-        dataFile = self.openFile('30052018-1240.log')
+        # Connecting to the FTPServer
+        self.ftp = FTP('10.7.227.206', 'admin', 'admin')
+        self.ftp.retrlines('RETR teste', self.writeFile)
+
+        # self.fileName = ''
+        self.dataFile = open('teste.log', 'r')
 
         # Data to be plotted
         self.x = []
         self.y = []
-        self.separateData(dataFile)
+        self.separateData(self.dataFile)
 
         # Creation of the menu File
         self.file_menu = QtGui.QMenu('&File', self)
-        self.file_menu.addAction('&Open')
+        self.file_menu.addAction('&Open', self.selectFile)
         self.file_menu.addAction('&Save')
         self.file_menu.addAction('&Close', self.fileQuit)
 
@@ -41,7 +47,7 @@ class ApplicationWindow(QtGui.QMainWindow):
 
         pg.setConfigOption('background', 'w')
         pg.setConfigOption('foreground', 'r')
-        pg.setConfigOption('leftButtonPan', False)
+        # pg.setConfigOption('leftButtonPan', False)
 
         btn = QtGui.QPushButton('Teste')
         btn2 = QtGui.QPushButton('Teste')
@@ -55,10 +61,7 @@ class ApplicationWindow(QtGui.QMainWindow):
 
         p1.setXRange(0, 400, padding=0)
         p1.showGrid(x=True, y=True)
-        p1.plot(
-            x=self.x,
-            y=self.y,
-            pen='r')
+        p1.plot(x=self.x, y=self.y, pen='r')
 
         # dataVisualizer = DataVisualizer()
         # hBoxLayout2.addWidget(dataVisualizer)
@@ -73,17 +76,25 @@ class ApplicationWindow(QtGui.QMainWindow):
     def closeEvent(self, ce):
         self.fileQuit()
 
-    def openFile(self, filePath):
-        return open(filePath, 'r')
-
     def separateData(self, file):
         for line in file:
-            a, b = line.split(";")
+            a, b = line.split(';')
             self.x.append(a)
             self.y.append(b)
 
         self.x = list(map(int, self.x))
         self.y = list(map(float, self.y))
+
+    # ----- Needing correction of file selection ----- #
+    def selectFile(self):
+        self.fileDialog = QtGui.QFileDialog(self)
+        self.fileDialog.show()
+        self.fileName = self.fileDialog.getOpenFileName(self, ("Open File"))
+
+    def writeFile(self, text):
+        file = open('teste.log', 'a')
+        file.write(text)
+        file.write('\n')
 
 
 qApp = QtGui.QApplication(sys.argv)
