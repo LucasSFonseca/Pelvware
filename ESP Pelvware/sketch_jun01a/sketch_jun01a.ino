@@ -28,7 +28,7 @@ void setup()
 
   
   /*
-   * Code used for truning the ESP into a WiFi Hotspot (Access Point).
+   * Code used for turning the ESP into a WiFi Hotspot (Access Point).
    * 
    */
   WiFi.softAP(ssid, password);
@@ -44,6 +44,12 @@ void setup()
   }
   SPIFFS.format();
 
+  /*
+   * This part writes a mock file containing 100 random values 
+   * for x and y, since the values need to come from the EMG electrodes,
+   * it needs to be rewritten and rallocated to the loop function.
+   * 
+   */
   for(int i = 0; i < 100 ; i++){
     File f = SPIFFS.open("/teste", "a");
     String name = f.name();
