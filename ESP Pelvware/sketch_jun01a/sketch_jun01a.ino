@@ -16,6 +16,7 @@ void setup()
    * Code for the WiFi Connection.
    * 
    * 
+   * 
   WiFi.begin(ssid, password);
   
   while (WiFi.status() != WL_CONNECTED){
